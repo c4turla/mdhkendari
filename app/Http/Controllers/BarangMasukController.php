@@ -91,6 +91,7 @@ class BarangMasukController extends Controller
                 $barang->stok_dos += $request->jumlah_dos[$i];
                 $barang->stok_pcs += $request->jumlah_pcs[$i];
                 $barang->stok_lainnya += $request->jumlah_lainnya[$i];
+                $barang->satuan_lainnya = $request->satuan_lainnya[$i];
                 $barang->save(); // Simpan perubahan stok
             }
         }

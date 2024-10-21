@@ -18,14 +18,16 @@
                 <th>Nama Barang</th>
                 <th>Jumlah Dos</th>
                 <th>Jumlah Pcs</th>
+                <th>Jumlah Lainnya</th>
             </tr>
         </thead>
         <tbody>
             @foreach($barangMasuk->detailBarangMasuk as $detail)
                 <tr>
                     <td>{{ $detail->barang->nama_barang }}</td>
-                    <td>{{ $detail->jumlah_dos }}</td>
-                    <td>{{ $detail->jumlah_pcs }}</td>
+                    <td>{{ $detail->jumlah_dos }} Dos</td>
+                    <td>{{ $detail->jumlah_pcs }} Pcs</td>
+                    <td>{{ $detail->jumlah_lainnya }} {{ $detail->satuan_lainnya }}</td>
                 </tr>
             @endforeach
         </tbody>
