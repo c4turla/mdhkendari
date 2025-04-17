@@ -42,15 +42,15 @@
         <tbody>
             <tr style="height: 18px;">
                 <td style="width: 12.6736%; height: 18px;">NPWP</td>
-                <td style="width: 51.2153%; height: 18px;">: 62.816.155.6-811.00</td>
+                <td style="width: 45%; height: 18px;">: 62.816.155.6-811.00</td>
                 <td style="width: 16.3194%; height: 18px;">Salesman</td>
-                <td style="width: 19.7917%; height: 18px;">: {{ $suratJalan->sales->full_name }}</td>
+                <td style="width: 21%; height: 18px;">: {{ $suratJalan->sales->full_name }}</td>
             </tr>
             <tr style="height: 18px;">
                 <td style="width: 12.6736%; height: 18px;">&nbsp;</td>
-                <td style="width: 51.2153%; height: 18px;">&nbsp;</td>
+                <td style="width: 45%; height: 18px;">&nbsp;</td>
                 <td style="width: 16.3194%; height: 18px;">Nomor</td>
-                <td style="width: 19.7917%; height: 18px;">: {{ $suratJalan->no_surat_jalan }}</td>
+                <td style="width: 21%; height: 18px;">: {{ $suratJalan->no_surat_jalan }}</td>
             </tr>
         </tbody>
     </table>
@@ -59,9 +59,11 @@
         <tbody>
             <tr>
                 <td style="width: 6.42361%; text-align: center;"><strong>NO</strong></td>
-                <td style="width: 43.5764%; text-align: center;"><strong>ITEM</strong></td>
+                <td style="width: 43.5764%; text-align: center;"><strong>ITEM PRODUK</strong></td>
                 <td style="width: 21.1806%; text-align: center;"><strong>JUMLAH</strong></td>
                 <td style="width: 28.8194%; text-align: center;"><strong>SATUAN</strong></td>
+                <td style="width: 28.8194%; text-align: center;"><strong>HARGA</strong></td>
+                <td style="width: 28.8194%; text-align: center;"><strong>KET</strong></td>
             </tr>
             @php
             $totalDos = 0;
@@ -89,6 +91,8 @@
                     -
                     @endif
                 </td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
             </tr>
             @endforeach
             <tr>
@@ -107,6 +111,20 @@
                 </strong>
                 </td>
                 <td style="width: 28.8194%;">&nbsp;</td>
+            </tr>
+        </tbody>
+    </table>
+    <table style="border-collapse: collapse; width: 100%; height: 36px;" border="0">
+        <tbody>
+            <tr style="height: 18px; margin-top: 30px">
+                <td style="width: 33.3333%; height: 18px; text-align: center;">(....................)</td>
+                <td style="width: 33.3333%; height: 18px; text-align: center;">(....................)</td>
+                <td style="width: 33.3333%; height: 18px; text-align: center;">(....................)</td>
+            </tr>
+            <tr style="height: 18px;">
+                <td style="width: 33.3333%; text-align: center; height: 18px;">Admin</td>
+                <td style="width: 33.3333%; text-align: center; height: 18px;">Gudang</td>
+                <td style="width: 33.3333%; text-align: center; height: 18px;">Pengiriman</td>
             </tr>
         </tbody>
     </table>

@@ -13,6 +13,9 @@ use App\Http\Controllers\FakturPenjualanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SuratJalanController;
 use App\Http\Controllers\BarangReturnController;
+use App\Exports\FakturExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Models\FakturPenjualan;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -43,10 +46,16 @@ Route::resource('surat_jalan', SuratJalanController::class);
 Route::resource('barang_return', BarangReturnController::class);
 Route::get('barang_return/getFakturDetails/{id}', [BarangReturnController::class, 'getFakturDetails']);
 Route::get('/faktur-penjualan/{id}/cetak', [FakturPenjualanController::class, 'cetakFaktur'])->name('faktur.cetak');
+Route::get('/faktur-penjualan/{id}/download', [FakturPenjualanController::class, 'downloadFaktur'])->name('faktur.download');
 Route::get('/surat-jalan/{id}/cetak', [SuratJalanController::class, 'cetakSuratJalan'])->name('surat_jalan.cetak');
+Route::get('/faktur/{id}/download-excel', function ($id) {
+    $faktur = FakturPenjualan::findOrFail($id);  // Gunakan FakturPenjualan, bukan Faktur
+    return Excel::download(new FakturExport($faktur), 'faktur_penjualan_' . $faktur->nomor_bukti . '.xlsx');
+})->name('faktur.download.excel');
 
 Route::get('/get-zona-barang', [FakturPenjualanController::class, 'getZonaBarang']);
 Route::get('/get-harga-barang', [FakturPenjualanController::class, 'getHargaBarang']);
+Route::get('/get-satuan', [FakturPenjualanController::class, 'getHargaDanSatuan']);
 //Language Translation
 
 Route::get('index/{locale}', [App\Http\Controllers\HomeController::class, 'lang']);

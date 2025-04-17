@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FakturPenjualan;
+use App\Models\DetailBaruFakturPenjualan;
 use App\Models\DetailFakturPenjualan;
 use App\Models\Outlet;
 use App\Models\Barang;
@@ -51,8 +52,9 @@ class FakturPenjualanController extends Controller
     }
 
     // Mendapatkan harga barang berdasarkan id_barang dan zona_id
-    public function getHargaBarang(Request $request)
+    public function getHargaDanSatuan(Request $request)
     {
+        // Ambil harga barang berdasarkan barang_id dan zona_id
         $hargaBarang = HargaBarang::where('barang_id', $request->barang_id)
             ->where('zona_id', $request->zona_id)
             ->first();
@@ -63,12 +65,28 @@ class FakturPenjualanController extends Controller
             ], 404); // Mengembalikan status 404 jika tidak ditemukan
         }
     
+        // Ambil satuan yang tersedia untuk barang dan zona_id tertentu
+        $satuans = HargaBarang::where('barang_id', $request->barang_id)
+            ->where('zona_id', $request->zona_id)
+            ->pluck('satuan') // Ambil hanya satuan unik
+            ->filter() // Menghapus nilai null
+            ->unique()
+            ->values()
+            ->toArray();
+    
+        // Tambahkan satuan default DOS dan PCS
+        $satuans = array_merge(['DOS', 'PCS'], $satuans);
+        $satuans = array_unique($satuans); // Hilangkan duplikasi jika ada
+    
         return response()->json([
             'harga_per_dos' => $hargaBarang->harga_per_dos,
-            'harga_per_pcs' => $hargaBarang->harga_per_pcs
+            'harga_per_pcs' => $hargaBarang->harga_per_pcs,
+            'harga_lainnya' => $hargaBarang->harga_lainnya,
+            'satuan' => $satuans
         ]);
     }
     
+        
 
     // Menyimpan faktur baru
     public function store(Request $request)
@@ -87,10 +105,10 @@ class FakturPenjualanController extends Controller
                 'grand_total' => 'required|numeric',
                 'barang' => 'required|array',
                 'barang.*' => 'required|exists:barang,id_barang',
-                'jumlah_dos' => 'array',
-                'jumlah_dos.*' => 'numeric|min:0',
-                'jumlah_pcs' => 'array',
-                'jumlah_pcs.*' => 'numeric|min:0',
+                'satuan' => 'array',
+                'satuan.*' => 'required|string|max:20',
+                'jumlah' => 'array',
+                'jumlah.*' => 'numeric|min:0',
                 'harga' => 'required|array',
                 'harga.*' => 'required|numeric|min:0',
                 'diskon' => 'required|array',
@@ -116,12 +134,12 @@ class FakturPenjualanController extends Controller
             \Log::info('Created Faktur Penjualan:', $faktur->toArray());
 
             // Simpan detail barang
-            $detailFakturPenjualan = [];
+            $detailBaruFakturPenjualan = [];
             foreach ($validated['barang'] as $index => $id_barang) {
-                $detailFakturPenjualan[] = new DetailFakturPenjualan([
+                $detailBaruFakturPenjualan[] = new DetailBaruFakturPenjualan([
                     'id_barang' => $validated['barang'][$index],
-                    'jumlah_dos' => $validated['jumlah_dos'][$index] ?? 0,
-                    'jumlah_pcs' => $validated['jumlah_pcs'][$index] ?? 0,
+                    'satuan' => $validated['satuan'][$index] ?? 0,
+                    'jumlah' => $validated['jumlah'][$index] ?? 0,
                     'harga' => $validated['harga'][$index],
                     'diskon' => $validated['diskon'][$index],
                     'total_harga' => $validated['total'][$index],
@@ -129,9 +147,9 @@ class FakturPenjualanController extends Controller
             }
 
             // Save detail records
-            $faktur->detailFakturPenjualan()->saveMany($detailFakturPenjualan);
+            $faktur->detailBaruFakturPenjualan()->saveMany($detailBaruFakturPenjualan);
 
-            \Log::info('Created DetailFakturPenjualan records:', $detailFakturPenjualan);
+            \Log::info('Created DetailFakturPenjualan records:', $detailBaruFakturPenjualan);
 
             DB::commit();
 
@@ -151,7 +169,7 @@ class FakturPenjualanController extends Controller
     {
         try {
             // Mengambil data faktur beserta relasi dengan outlet (termasuk sales) dan detailFakturPenjualan serta barang
-            $faktur = FakturPenjualan::with(['outlet.sales', 'detailFakturPenjualan.barang'])->findOrFail($id);
+            $faktur = FakturPenjualan::with(['outlet.sales', 'detailBaruFakturPenjualan.barang'])->findOrFail($id);
             
             // Menampilkan view jika data ditemukan
             return view('faktur_penjualan.show', compact('faktur'));
@@ -166,7 +184,7 @@ class FakturPenjualanController extends Controller
 
     public function edit($id)
     {
-        $faktur = FakturPenjualan::with('detailFakturPenjualan')->findOrFail($id);
+        $faktur = FakturPenjualan::with('detailBaruFakturPenjualan')->findOrFail($id);
         $outlets = Outlet::all();
         $barangs = Barang::all();
 
@@ -190,10 +208,10 @@ class FakturPenjualanController extends Controller
                   'grand_total' => 'required|numeric',
                   'barang' => 'required|array',
                   'barang.*' => 'required|exists:barang,id_barang',
-                  'jumlah_dos' => 'array',
-                  'jumlah_dos.*' => 'numeric|min:0',
-                  'jumlah_pcs' => 'array',
-                  'jumlah_pcs.*' => 'numeric|min:0',
+                  'satuan' => 'array',
+                  'satuan.*' => 'numeric|min:0',
+                  'jumlah' => 'array',
+                  'jumlah.*' => 'numeric|min:0',
                   'harga' => 'required|array',
                   'harga.*' => 'required|numeric|min:0',
                   'diskon' => 'required|array',
@@ -220,15 +238,15 @@ class FakturPenjualanController extends Controller
               \Log::info('Updated Faktur Penjualan:', $faktur->toArray());
   
               // Hapus detail barang lama
-              $faktur->detailFakturPenjualan()->delete();
+              $faktur->detailBaruFakturPenjualan()->delete();
   
               // Simpan detail barang baru
-              $detailFakturPenjualan = [];
+              $detailBaruFakturPenjualan = [];
               foreach ($validated['barang'] as $index => $id_barang) {
-                  $detailFakturPenjualan[] = new DetailFakturPenjualan([
+                  $detailBaruFakturPenjualan[] = new DetailBaruFakturPenjualan([
                       'id_barang' => $validated['barang'][$index],
-                      'jumlah_dos' => $validated['jumlah_dos'][$index] ?? 0,
-                      'jumlah_pcs' => $validated['jumlah_pcs'][$index] ?? 0,
+                      'satuan' => $validated['satuan'][$index] ?? 0,
+                      'jumlah' => $validated['jumlah'][$index] ?? 0,
                       'harga' => $validated['harga'][$index],
                       'diskon' => $validated['diskon'][$index],
                       'total_harga' => $validated['total'][$index],
@@ -236,9 +254,9 @@ class FakturPenjualanController extends Controller
               }
   
               // Simpan detail yang baru
-              $faktur->detailFakturPenjualan()->saveMany($detailFakturPenjualan);
+              $faktur->detailBaruFakturPenjualan()->saveMany($detailBaruFakturPenjualan);
   
-              \Log::info('Updated DetailFakturPenjualan records:', $detailFakturPenjualan);
+              \Log::info('Updated DetailFakturPenjualan records:', $detailBaruFakturPenjualan);
   
               DB::commit();
   
@@ -257,7 +275,7 @@ class FakturPenjualanController extends Controller
     public function cetakFaktur($id)
     {
         // Ambil data faktur dengan relasi yang diperlukan
-        $faktur = FakturPenjualan::with('outlet.zona', 'outlet.sales', 'detailFakturPenjualan.barang')->findOrFail($id);
+        $faktur = FakturPenjualan::with('outlet.zona', 'outlet.sales', 'detailBaruFakturPenjualan.barang')->findOrFail($id);
 
         // Load view dan generate PDF
         $pdf = PDF::loadView('pdf.faktur', compact('faktur'));

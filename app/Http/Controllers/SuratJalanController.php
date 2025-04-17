@@ -39,7 +39,7 @@ class SuratJalanController extends Controller
     public function create()
     {
         // Mengambil semua faktur penjualan dan sales
-        $fakturs = FakturPenjualan::with('outlet')->get();
+        $fakturs = FakturPenjualan::with('outlet')->orderBy('created_at', 'desc')->get();
         $sales = User::where('user_level', 'sales')->pluck('full_name', 'id');
         $kode = SuratJalan::generateKode();
         return view('surat_jalan.create', compact('fakturs', 'sales' , 'kode'));
@@ -74,19 +74,17 @@ class SuratJalanController extends Controller
     
             // Memastikan faktur ditemukan
             if ($faktur) {
-                foreach ($faktur->detailFakturPenjualan as $detail) {
+                foreach ($faktur->detailBaruFakturPenjualan as $detail) {
                     $key = $detail->id_barang;
     
                     // Jika barang sudah ada dalam array, tambahkan jumlahnya
                     if (isset($details[$key])) {
-                        $details[$key]['jumlah_dos'] += $detail->jumlah_dos;
-                        $details[$key]['jumlah_pcs'] += $detail->jumlah_pcs;
+                        $details[$key]['jumlah'] += $detail->jumlah_dos;
                     } else {
                         // Jika barang belum ada, tambahkan ke array
                         $details[$key] = [
                             'id_barang' => $detail->id_barang,
-                            'jumlah_dos' => $detail->jumlah_dos,
-                            'jumlah_pcs' => $detail->jumlah_pcs,
+                            'jumlah' => $detail->jumlah_dos,
                             'fakturs' => [$fakturId] // Simpan ID faktur untuk referensi
                         ];
                     }

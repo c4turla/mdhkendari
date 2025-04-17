@@ -74,7 +74,7 @@
                                         </a>
                                     </li>
                                     <li class="list-inline-item">
-                                        <a href="{{ route('faktur.cetak', $faktur->id_faktur) }}" class="px-2 text-primary" target="_blank"><i
+                                        <a href="{{ route('faktur.download.excel', $faktur->id_faktur) }}" class="px-2 text-primary" target="_blank"><i
                                                 class="uil uil-print font-size-18"></i></a>
                                     </li>
                                     <li class="list-inline-item">

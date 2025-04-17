@@ -44,7 +44,7 @@
                                 <div class="col-md-10">
                                     <select id="fakturs" name="fakturs[]" class="select2 form-control select2-multiple" multiple="multiple" data-placeholder="Pilih Faktur" required>
                                         @foreach($fakturs as $faktur)
-                                            <option value="{{ $faktur->id_faktur }}">{{ $faktur->nomor_bukti }} - {{ $faktur->outlet->nama }}</option>
+                                            <option value="{{ $faktur->id_faktur }}">{{ $faktur->nomor_bukti }} - {{ $faktur->outlet->nama }} - {{ $faktur->outlet->sales->full_name }}</option>
                                         @endforeach
                                     </select>
                                     @error('fakturs')

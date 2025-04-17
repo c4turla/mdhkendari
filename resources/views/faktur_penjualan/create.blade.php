@@ -20,6 +20,7 @@
         margin-left: 10px;
     }
 </style>
+<link href="{{ URL::asset('/assets/libs/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
 @endsection
 @section('content')
 @component('common-components.breadcrumb')
@@ -57,7 +58,7 @@
                         <div class="mb-3 row">
                             <label for="id_outlet" class="col-md-2 col-form-label">Outlet</label>
                             <div class="col-md-4">
-                                <select id="outlet_id" name="id_outlet" class="form-select" required>
+                                <select id="outlet_id" name="id_outlet" class="form-control select2" required>
                                     <option value="">Pilih Outlet</option>
                                     @foreach($outlets as $outlet)
                                         <option value="{{ $outlet->id_outlet }}" data-zona-id="{{ $outlet->id_zona }}">{{ $outlet->nama }}</option>
@@ -102,7 +103,7 @@
                             <div class="item-row">
                                 <div>
                                     <label for="barang_1">Nama Barang</label>
-                                    <select id="barang_1" name="barang[]" class="form-select" required>
+                                    <select id="barang_1" name="barang[]" class="form-control select2" required>
                                         <option value="">Pilih Barang</option>
                                         @foreach($barangs as $barang)
                                             <option value="{{ $barang->id_barang }}">{{ $barang->nama_barang }}</option>
@@ -110,20 +111,22 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="jumlah_dos_1">Jumlah Dos</label>
-                                    <input type="number" id="jumlah_dos_1" name="jumlah_dos[]" class="form-control" placeholder="Jumlah Dos" oninput="calculateTotal(this)" value="0" min="0">
+                                    <label for="satuan_1">Satuan</label>
+                                    <select id="satuan_1" name="satuan[]" class="form-control select2" required>
+                                        <option value="">Pilih Satuan</option>
+                                    </select>
                                 </div>
                                 <div>
-                                    <label for="jumlah_pcs_1">Jumlah Pcs</label>
-                                    <input type="number" id="jumlah_pcs_1" name="jumlah_pcs[]" class="form-control" placeholder="Jumlah Pcs" oninput="calculateTotal(this)" value="0" min="0">
+                                    <label for="jumlah_1">Jumlah</label>
+                                    <input type="number" id="jumlah_1" name="jumlah[]" class="form-control" placeholder="Jumlah" oninput="calculateTotal(this)" value="0" min="0">
                                 </div>
                                 <div>
                                     <label for="harga_1">Harga</label>
-                                    <input type="number" id="harga_1" name="harga[]" class="form-control" placeholder="Harga" required>
+                                    <input type="number" id="harga_1" name="harga[]" class="form-control" placeholder="Harga" readonly>
                                 </div>
                                 <div>
                                     <label for="diskon_1">Diskon</label>
-                                    <input type="number" id="diskon_1" name="diskon[]" class="form-control" placeholder="Diskon" oninput="calculateTotal(this)">
+                                    <input type="number" id="diskon_1" name="diskon[]" class="form-control" placeholder="Diskon" oninput="calculateTotal(this)" value="0">
                                 </div>
                                 <div>
                                     <label for="total_1">Total</label>
@@ -163,182 +166,183 @@
 
 @endsection
 @section('script')
-<script>
-    let itemCount = 1;
 
-// Function to add a new item row
+<script>
+let itemCount = 1;
+
 function addItem() {
     itemCount++;
     const itemRow = document.createElement('div');
     itemRow.classList.add('item-row');
     
-    // Creating dropdown list for barang
     let barangOptions = '<option value="">Pilih Barang</option>';
     @foreach($barangs as $barang)
         barangOptions += `<option value="{{ $barang->id_barang }}">{{ $barang->nama_barang }}</option>`;
     @endforeach
 
     itemRow.innerHTML = `
-        <div> 
-            <select id="barang_${itemCount}" name="barang[]" class="form-select" required>
-                ${barangOptions}
-            </select>
-        </div>
-        <div>          
-            <input type="number" id="jumlah_dos_${itemCount}" name="jumlah_dos[]" class="form-control" placeholder="Jumlah Dos" oninput="calculateTotal(this)" value="0" min="0">
-        </div>
-        <div>         
-            <input type="number" id="jumlah_pcs_${itemCount}" name="jumlah_pcs[]" class="form-control" placeholder="Jumlah Pcs" oninput="calculateTotal(this)" value="0" min="0">
-        </div>
-        <div>          
-            <input type="number" id="harga_${itemCount}" name="harga[]" class="form-control" placeholder="Harga" readonly>
-        </div>
-        <div>            
-            <input type="number" id="diskon_${itemCount}" name="diskon[]" class="form-control" placeholder="Diskon" oninput="calculateTotal(this)">
-        </div>
-        <div>          
-            <input type="number" id="total_${itemCount}" name="total[]" class="form-control" placeholder="Total" readonly>
-        </div>
-        <i class="remove-item fa fa-trash" style="cursor: pointer;" onclick="removeItem(this)"></i>
-    `;
+            <div> 
+                <select id="barang_${itemCount}" name="barang[]" class="form-control select2" required>
+                    ${barangOptions}
+                </select>
+            </div>
+            <div> 
+                <select id="satuan_${itemCount}" name="satuan[]" class="form-control select2" required>
+                    <option value="">Pilih Satuan</option>
+                </select>
+            </div>
+            <div>          
+                <input type="number" id="jumlah_${itemCount}" name="jumlah[]" class="form-control" placeholder="Jumlah" oninput="calculateTotal(this)" value="0" min="0">
+            </div>
+            <div>          
+                <input type="number" id="harga_${itemCount}" name="harga[]" class="form-control" placeholder="Harga" readonly>
+            </div>
+            <div>            
+                <input type="number" id="diskon_${itemCount}" name="diskon[]" class="form-control" placeholder="Diskon" oninput="calculateTotal(this)" value="0">
+            </div>
+            <div>          
+                <input type="number" id="total_${itemCount}" name="total[]" class="form-control" placeholder="Total" readonly>
+            </div>
+            <i class="remove-item fa fa-trash" style="cursor: pointer;" onclick="removeItem(this)"></i>
+        `;
     document.getElementById('barang-list').appendChild(itemRow);
 
-    // Attach change event listener for the new barang dropdown
     attachBarangChangeEvent(`#barang_${itemCount}`);
+    attachSatuanChangeEvent(`#satuan_${itemCount}`);
+    $('.select2').select2();
 }
 
-// Function to remove an item row
 function removeItem(element) {
     element.parentElement.remove();
     calculateGrandTotal();
 }
 
-// Function to calculate total for each item
 function calculateTotal(element) {
     const row = element.closest('.item-row');
-    const jumlahDos = parseFloat(row.querySelector('input[name="jumlah_dos[]"]').value) || 0;
-    const jumlahPcs = parseFloat(row.querySelector('input[name="jumlah_pcs[]"]').value) || 0;
+    const jumlah = parseFloat(row.querySelector('input[name="jumlah[]"]').value) || 0;
     const harga = parseFloat(row.querySelector('input[name="harga[]"]').value) || 0;
     const diskon = parseFloat(row.querySelector('input[name="diskon[]"]').value) || 0;
 
-    const total = ((jumlahDos * harga) + (jumlahPcs * harga)) - diskon;
+    const total = (jumlah * harga) - diskon;
     row.querySelector('input[name="total[]"]').value = total.toFixed(2);
-
     calculateGrandTotal();
 }
 
-// Function to calculate grand total for all items
 function calculateGrandTotal() {
     let grandTotal = 0;
-    const totals = document.querySelectorAll('input[name="total[]"]');
-    totals.forEach(total => {
+    document.querySelectorAll('input[name="total[]"]').forEach(total => {
         grandTotal += parseFloat(total.value) || 0;
     });
     document.getElementById('grand_total').value = grandTotal.toFixed(2);
 }
 
-
-// Function to handle barang selection and fetch price based on barang_id and zona_id
 function attachBarangChangeEvent(selector) {
-    let zonaId = null;
-
-    // Ketika outlet berubah, simpan zona_id
-    $('#outlet_id').change(function() {
-        zonaId = $(this).find(':selected').data('zona-id');
-        $('#zona_id').val(zonaId); // Simpan zona_id ke dalam field tersembunyi (hidden input) jika diperlukan
-
-        // Reset semua harga, total, dan barang jika outlet berubah
-        $('select[name="barang[]"]').val(''); // Reset barang selection
-        $('input[name="harga[]"]').val('');   // Clear harga fields
-        $('input[name="total[]"]').val('');   // Clear total fields
-        calculateGrandTotal();                // Recalculate grand total
-    });
-
-    // Handle barang selection untuk setiap row
     $(selector).change(function() {
-    const row = $(this).closest('.item-row');
-    const barangId = $(this).val();
-    const zonaId = $('#zona_id').val(); // Pastikan zona_id terisi
+        const row = $(this).closest('.item-row');
+        const barangId = $(this).val();
+        const zonaId = $('#zona_id').val();
+        const satuanSelect = row.find('select[name="satuan[]"]');
 
-    if (barangId && zonaId) {
-        // Ambil harga berdasarkan barang_id dan zona_id
-        $.ajax({
-            url: '/get-harga-barang',
-            type: 'GET',
-            data: {
-                barang_id: barangId,
-                zona_id: zonaId
-            },
-            success: function(data) {
-                // Simpan harga di atribut data row untuk digunakan nanti
-                row.data('hargaPerDos', data.harga_per_dos);
-                row.data('hargaPerPcs', data.harga_per_pcs);
-            },
-            error: function(jqXHR) {
-                // Tangani kesalahan jika terjadi
-                if (jqXHR.status === 404) {
-                    // Menampilkan SweetAlert jika tidak ada harga
-                    Swal.fire({
-                        title: "Peringatan",
-                        text: "Harga Barang belum ada di Harga Per Zona.",
-                        icon: "warning",
-                        button: "OK",
+        if (!zonaId) {
+            Swal.fire({
+                title: "Peringatan",
+                text: "Anda Belum Memilih Outlet.",
+                icon: "warning"
+            });
+            return;
+        }
+
+        if (barangId) {
+            console.log('Mengambil data satuan dan harga untuk barang:', barangId, 'dan zona:', zonaId); // Debugging: Tampilkan barang dan zona yang dipilih
+
+            $.ajax({
+                url: '/get-satuan',
+                type: 'GET',
+                data: { zona_id: zonaId, barang_id: barangId },
+                success: function(response) {
+                    console.log('Response dari server:', response); // Debugging: Tampilkan response dari server
+
+                    satuanSelect.empty().append('<option value="">Pilih Satuan</option>');
+                    $.each(response.satuan, function(index, satuan) {
+                        satuanSelect.append(`<option value="${satuan}">${satuan}</option>`);
                     });
-                } else {
-                    Swal.fire({
-                        title: "Error",
-                        text: "Terjadi kesalahan saat mengambil data harga.",
-                        icon: "error",
-                        button: "OK",
-                    });
+
+                    // Simpan data harga ke row
+                    row.data('hargaPerDos', response.harga_per_dos);
+                    row.data('hargaPerPcs', response.harga_per_pcs);
+                    row.data('hargaLainnya', response.harga_lainnya);
+
+                    // Debugging: Tampilkan data harga yang disimpan
+                    console.log('Data harga per DOS disimpan:', row.data('hargaPerDos'));
+                    console.log('Data harga per PCS disimpan:', row.data('hargaPerPcs'));
+                    console.log('Data harga lainnya disimpan:', row.data('hargaLainnya'));
+                },
+                error: function(jqXHR) {
+                    console.error('Error saat mengambil data satuan dan harga:', jqXHR); // Debugging: Tampilkan error
+                    if (jqXHR.status === 404) {
+                        Swal.fire({
+                            title: "Peringatan",
+                            text: "Harga Barang belum ada di Harga Per Zona.",
+                            icon: "warning"
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Error",
+                            text: "Terjadi kesalahan saat mengambil data harga.",
+                            icon: "error"
+                        });
+                    }
                 }
-            }
-        });
-    } else {
-        Swal.fire({
-            title: "Peringatan",
-            text: "Anda Belum Memilih Outlet.",
-            icon: "warning",
-            button: "OK",
-        });
-    }
-});
-
-
-    // Ketika jumlah dos atau pcs diisi, tampilkan harga dan hitung total
-    $('input[name="jumlah_dos[]"], input[name="jumlah_pcs[]"]').on('input', function() {
-    const row = $(this).closest('.item-row');
-    const jumlahDos = parseFloat(row.find('input[name="jumlah_dos[]"]').val()) || 0;
-    const jumlahPcs = parseFloat(row.find('input[name="jumlah_pcs[]"]').val()) || 0;
-
-    // Ambil harga yang sudah disimpan sebelumnya di data row
-    const hargaPerDos = row.data('hargaPerDos') || 0;
-    const hargaPerPcs = row.data('hargaPerPcs') || 0;
-
-    // Jika user mengisi jumlah dos, tampilkan harga per dos
-    if (jumlahDos > 0) {
-        row.find('input[name="harga[]"]').val(hargaPerDos); // Tampilkan harga per dos
-    }
-
-    // Jika user mengisi jumlah pcs, tampilkan harga per pcs
-    if (jumlahPcs > 0) {
-        row.find('input[name="harga[]"]').val(hargaPerPcs); // Tampilkan harga per pcs
-    }
-
-    // Hitung total harga berdasarkan dos dan pcs
-    const total = (jumlahDos * hargaPerDos) + (jumlahPcs * hargaPerPcs);
-    row.find('input[name="total[]"]').val(total.toFixed(2));
-
-    // Hitung grand total
-    calculateGrandTotal();
+            });
+        }
     });
 }
 
+function attachSatuanChangeEvent(selector) {
+    $(document).on('change', selector, function() {
+        const row = $(this).closest('.item-row');
+        const satuan = $(this).val();
+        let harga = 0;
 
-// Initial attach of change event for the first item row
+        // Only proceed if satuan is selected
+        if (!satuan) {
+            return;
+        }
+
+        // Get the stored prices
+        const hargaPerDos = parseFloat(row.data('hargaPerDos')) || 0;
+        const hargaPerPcs = parseFloat(row.data('hargaPerPcs')) || 0;
+        const hargaLainnya = parseFloat(row.data('hargaLainnya')) || 0;
+
+        // Set harga based on selected satuan
+        switch(satuan.toUpperCase()) {
+            case 'DOS':
+                harga = hargaPerDos;
+                break;
+            case 'PCS':
+                harga = hargaPerPcs;
+                break;
+            default:
+                harga = hargaLainnya;
+        }
+
+        // Update the harga input and recalculate total
+        const hargaInput = row.find('input[name="harga[]"]');
+        hargaInput.val(harga);
+        calculateTotal(row.find('input[name="jumlah[]"]')[0]);
+    });
+}
+
 $(document).ready(function() {
     attachBarangChangeEvent('#barang_1');
+    attachSatuanChangeEvent('#satuan_1');
+    
+    $('#outlet_id').change(function() {
+        const selectedOption = $(this).find('option:selected');
+        $('#zona_id').val(selectedOption.data('zona-id'));
+    });
 });
-
 </script>
+<script src="{{ URL::asset('/assets/libs/select2/select2.min.js') }}"></script>
+<script src="{{ URL::asset('/assets/js/pages/form-advanced.init.js') }}"></script>
 @endsection

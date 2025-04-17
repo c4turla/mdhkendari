@@ -6,16 +6,7 @@
     <div class="account-pages my-5 pt-sm-5">
         <div class="container">
             <div class="row">
-                <div class="col-lg-12">
-                    <div class="text-center">
-                        <a href="{{ url('index') }}" class="mb-5 d-block auth-logo">
-                            <img src="{{ URL::asset('/assets/images/logo-dark.png') }}" alt="" height="22"
-                                class="logo logo-dark">
-                            <img src="{{ URL::asset('/assets/images/logo-light.png') }}" alt="" height="22"
-                                class="logo logo-light">
-                        </a>
-                    </div>
-                </div>
+
             </div>
             <div class="row align-items-center justify-content-center">
                 <div class="col-md-8 col-lg-6 col-xl-5">
@@ -24,8 +15,10 @@
                         <div class="card-body p-4">
 
                             <div class="text-center mt-2">
+                            <img src="{{ URL::asset('/assets/images/logo.png') }}" alt="" height="82"
+                            class="logo">
                                 <h5 class="text-primary">Register Account</h5>
-                                <p class="text-muted">Get your free Minible account now.</p>
+                                <p class="text-muted">Create New Account Now.</p>
                             </div>
                             <div class="p-2 mt-4">
                                 <form method="POST" action="{{ route('register') }}">
@@ -93,30 +86,8 @@
 
                                     <div class="mt-4 text-center">
                                         <div class="signin-other-title">
-                                            <h5 class="font-size-14 mb-3 title">Sign up using</h5>
+                                            <h5 class="font-size-14 mb-3 title"></h5>
                                         </div>
-
-
-                                        <ul class="list-inline">
-                                            <li class="list-inline-item">
-                                                <a href="javascript:void()"
-                                                    class="social-list-item bg-primary text-white border-primary">
-                                                    <i class="mdi mdi-facebook"></i>
-                                                </a>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <a href="javascript:void()"
-                                                    class="social-list-item bg-info text-white border-info">
-                                                    <i class="mdi mdi-twitter"></i>
-                                                </a>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <a href="javascript:void()"
-                                                    class="social-list-item bg-danger text-white border-danger">
-                                                    <i class="mdi mdi-google"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
                                     </div>
 
                                     <div class="mt-4 text-center">
@@ -132,7 +103,7 @@
                         <p>© <script>
                                 document.write(new Date().getFullYear())
 
-                            </script> Minible. Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand</p>
+                            </script> Aplikasi MDH Kendari. Crafted with <i class="mdi mdi-heart text-danger"></i> by Kendariweb</p>
                     </div>
 
                 </div>

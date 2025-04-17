@@ -46,10 +46,10 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($faktur->detailFakturPenjualan as $detail)
+            @foreach($faktur->detailBaruFakturPenjualan as $detail)
                 <tr>
                     <td class="font-size-12">{{ $detail->barang->nama_barang }}</td>
-                    <td class="font-size-12">{{ $detail->jumlah_formatted }}</td>
+                    <td class="font-size-12">{{ $detail->jumlah }} {{ $detail->satuan }}</td>
                     <td class="font-size-12 text-end">Rp {{ number_format($detail->harga, 0, ',', '.') }}</td>
                     <td class="font-size-12 text-end">Rp {{ number_format($detail->diskon, 0, ',', '.') }}</td>
                     <td class="font-size-12 text-end">Rp {{ number_format($detail->total_harga, 0, ',', '.') }}</td>
@@ -63,5 +63,5 @@
     </table>     
 </div>
 
-
+<a href="{{ route('faktur.download', $faktur->id_faktur) }}" class="btn btn-primary btn-sm" target="_blank"><i class="uil uil-cloud-download"></i> Download</a>
 

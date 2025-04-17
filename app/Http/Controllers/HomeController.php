@@ -97,7 +97,7 @@ class HomeController extends Controller
     public function showDetail($id)
     {
         // Mengambil data faktur beserta relasi-relasinya
-        $faktur = FakturPenjualan::with('outlet.zona', 'outlet.sales', 'detailFakturPenjualan.barang')->findOrFail($id);
+        $faktur = FakturPenjualan::with('outlet.zona', 'outlet.sales', 'detailBaruFakturPenjualan.barang')->findOrFail($id);
     
         // Buat HTML yang akan dikirimkan melalui Ajax
         $html = '
@@ -133,11 +133,11 @@ class HomeController extends Controller
                 </thead>
                 <tbody>';
                     
-        foreach ($faktur->detailFakturPenjualan as $detail) {
+        foreach ($faktur->detailBaruFakturPenjualan as $detail) {
             $html .= '
                     <tr>
                         <td>' . $detail->barang->nama_barang . '</td>
-                        <td>' . $detail->jumlah_formatted . '</td>
+                        <td>' . $detail->jumlah .'&nbsp;'.  $detail->satuan .'</td>
                         <td class="text-end">Rp ' . number_format($detail->harga, 0, ',', '.') . '</td>
                         <td class="text-end">Rp ' . number_format($detail->diskon, 0, ',', '.') . '</td>
                         <td class="text-end">Rp ' . number_format($detail->total_harga, 0, ',', '.') . '</td>

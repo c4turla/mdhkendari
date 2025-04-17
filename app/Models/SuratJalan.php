@@ -32,7 +32,7 @@ class SuratJalan extends Model
     // Relasi ke model SuratJalanDetail
     public function details()
     {
-        return $this->hasMany(SuratJalanDetail::class, 'id_surat_jalan');
+        return $this->hasMany(SuratJalanDetailBaru::class, 'id_surat_jalan');
     }
 
     public static function generateKode()

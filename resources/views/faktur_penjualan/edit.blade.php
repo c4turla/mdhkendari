@@ -101,7 +101,7 @@
                         <!-- Daftar Barang -->
                         <div id="barang-list">
                      
-                            @foreach($faktur->detailFakturPenjualan as $index => $detail)
+                            @foreach($faktur->detailBaruFakturPenjualan as $index => $detail)
                             <div class="item-row">
                                 <div>
                                     <label for="barang_{{ $index + 1 }}">Nama Barang</label>
@@ -113,12 +113,12 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="jumlah_dos_{{ $index + 1 }}">Jumlah Dos</label>
-                                    <input type="number" id="jumlah_dos_{{ $index + 1 }}" name="jumlah_dos[]" class="form-control" value="{{ $detail->jumlah_dos }}" oninput="calculateTotal(this)" min="0">
+                                    <label for="satuan_{{ $index + 1 }}">Satuan</label>
+                                    <input type="text" id="satuan_{{ $index + 1 }}" name="satuan[]" class="form-control" value="{{ $detail->satuan }}">
                                 </div>
                                 <div>
-                                    <label for="jumlah_pcs_{{ $index + 1 }}">Jumlah Pcs</label>
-                                    <input type="number" id="jumlah_pcs_{{ $index + 1 }}" name="jumlah_pcs[]" class="form-control" value="{{ $detail->jumlah_pcs }}" oninput="calculateTotal(this)" min="0">
+                                    <label for="jumlah_{{ $index + 1 }}">Jumlah</label>
+                                    <input type="number" id="jumlah_{{ $index + 1 }}" name="jumlah[]" class="form-control" value="{{ $detail->jumlah }}" oninput="calculateTotal(this)" min="0">
                                 </div>
                                 <div>
                                     <label for="harga_{{ $index + 1 }}">Harga</label>
@@ -168,7 +168,7 @@
 @endsection
 @section('script')
 <script>
-    let itemCount = {{ count($faktur->detailFakturPenjualan) }};
+    let itemCount = {{ count($faktur->detailBaruFakturPenjualan) }};
 
     // Function to add a new item row
     function addItem() {
@@ -189,10 +189,10 @@
                 </select>
             </div>
             <div>
-                <input type="number" id="jumlah_dos_${itemCount}" name="jumlah_dos[]" class="form-control" oninput="calculateTotal(this)" min="0">
+                <input type="text" id="satuan_${itemCount}" name="satuan[]" class="form-control">
             </div>
             <div>
-                <input type="number" id="jumlah_pcs_${itemCount}" name="jumlah_pcs[]" class="form-control" oninput="calculateTotal(this)" min="0">
+                <input type="number" id="jumlah_${itemCount}" name="jumlah_[]" class="form-control" oninput="calculateTotal(this)" min="0">
             </div>
             <div>
                 <input type="number" id="harga_${itemCount}" name="harga[]" class="form-control" required>
@@ -219,10 +219,9 @@
         const row = element.closest('.item-row');
         const harga = row.querySelector('input[name="harga[]"]').value || 0;
         const diskon = row.querySelector('input[name="diskon[]"]').value || 0;
-        const jumlah_dos = row.querySelector('input[name="jumlah_dos[]"]').value || 0;
-        const jumlah_pcs = row.querySelector('input[name="jumlah_pcs[]"]').value || 0;
+        const jumlah = row.querySelector('input[name="jumlah[]"]').value || 0;
         
-        let total = (jumlah_dos * harga) + (jumlah_pcs * harga) - diskon;
+        let total = (jumlah * harga) - diskon;
         row.querySelector('input[name="total[]"]').value = total;
         calculateGrandTotal();
     }

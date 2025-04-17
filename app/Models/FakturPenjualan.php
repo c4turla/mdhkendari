@@ -28,9 +28,9 @@ class FakturPenjualan extends Model
         return $this->belongsTo(Outlet::class, 'id_outlet');
     }
 
-    public function detailFakturPenjualan()
+    public function detailBaruFakturPenjualan()
     {
-        return $this->hasMany(DetailFakturPenjualan::class, 'id_faktur');
+        return $this->hasMany(DetailBaruFakturPenjualan::class, 'id_faktur');
     }
 
     public function barangReturns()
